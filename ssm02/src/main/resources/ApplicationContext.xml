@@ -1,0 +1,83 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<!-- 扫描注解注入springIOC容器 -->
+	<context:component-scan base-package="com.hp"></context:component-scan>
+
+
+
+		<!-- 注册数据源 -->
+		<context:property-placeholder location="classpath:jdbc.properties"/>
+		<!-- 数据源 -->
+		<bean id="dataSource"
+			class="org.apache.commons.dbcp.BasicDataSource">
+			<property name="driverClassName" value="${jdbc.driverClassName}"></property>
+			<property name="url" value="${jdbc.url}"/>
+			<property name="username" value="${jdbc.username}"></property>
+			<property name="password" value="${jdbc.password}"></property>
+			<!-- 最大连接数 -->
+			<property name="maxActive" value="30"></property>
+			<!-- 最大空闲连接数 -->
+			<property name="maxIdle" value="5"></property>
+			<!--removeAbandoned: 是否自动回收超时连接-->
+	        <property name="removeAbandoned" value="true" />
+	        <!--removeAbandonedTimeout: 超时时间(以秒数为单位)-->
+	        <property name="removeAbandonedTimeout" value="30" />
+
+		</bean>
+
+	<!-- 注册session工厂 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 注入数据源 -->	
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 注入mybatis配置文件 -->
+		<property name="configLocation" value="classpath:MyBatis-Config.xml"></property>
+		<!-- 注入mybatis的映射文件 -->
+		<property name="mapperLocations" value="classpath:com/hp/mappers/*.xml"></property>	
+	</bean>
+
+	<!-- 扫描mapper注解，注册接口并装配 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 注入dao -->
+		<property name="basePackage" value="com.hp.dao"></property>
+		<!-- 注入session工厂 -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+
+<!-- (事务管理)事务的传播性 tx -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 注入数据源 -->
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 配置事务通知属性 -->  
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">  
+        <!-- 定义事务传播属性 -->  
+        <tx:attributes>  
+            <!-- 所有方法都是事务方法 -->
+			<tx:method name="*"/>
+			<!--以get开始的所有方法  -->
+			<tx:method name="get*" read-only="true"/>
+        </tx:attributes>  
+    </tx:advice>  
+  	
+    <!-- 配置事务切面 -->  
+    <aop:config>  
+        <aop:pointcut id="serviceOperation"  
+            expression="execution(* com.hp.servicesImpl.*.*(..))" />  
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />  
+    </aop:config>  
+	<!--fgdsfgsd  -->
+
+</beans>
+
+
+

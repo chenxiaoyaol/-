@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<table border='1'>
+		<tr th:each="li:${orders.list}">
+			<td th:text="${li.ordersName}"></td>
+			
+			<td th:text="${li.address}"></td>
+			<td th:text="${li.price}"></td>
+			<td>
+				<span th:if="${li.alipay}==0">未支付</span>
+				<span th:if="${li.alipay}==1">已支付</span>
+			</td>
+		</tr>
+	</table>
+	<span th:if="${orders.isFirstPage}!=true"><!-- 已经是首页 的时候不显示首页-->
+		<a th:href="@{/TOrder/getAll(pageNum=${orders.navigateFirstPage})}">
+			首页
+		</a>
+		<a th:href="@{/TOrder/getAll(pageNum=${orders.prePage})}">
+			上一页
+		</a>
+	</span>
+	
+	
+	<span th:if="${orders.isLastPage}!=true"><!-- 已经是首页 的时候不显示首页-->
+			<a th:href="@{/TOrder/getAll(pageNum=${orders.nextPage})}">
+				下一页	
+			</a>
+			<a th:href="@{/TOrder/getAll(pageNum=${orders.pages})}">
+				尾页
+			</a>
+	</span>
+	
+
+
+
+</body>
+</html>

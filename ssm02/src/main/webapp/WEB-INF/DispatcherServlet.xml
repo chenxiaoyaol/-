@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+
+<!-- 扫描注解 -->
+<context:component-scan base-package="com.hp.controller"></context:component-scan>
+	<!-- 设置处理静态文件的方案 -->
+	<mvc:annotation-driven>
+		<!-- 消息转换器 -->
+		<mvc:message-converters register-defaults="true"> 
+		   <bean class="org.springframework.http.converter.StringHttpMessageConverter"> 
+		    <property name="supportedMediaTypes" value="application/json;charset=UTF-8"/> 
+		   </bean> 
+	  </mvc:message-converters> 
+	</mvc:annotation-driven>
+	<mvc:default-servlet-handler/><!-- 一个处理器和一个适配器来处理springmvc的静态文件 -->
+	
+
+	<!-- html视图解析器使用Thymeleaf -->
+	<bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+		<!-- 前缀 -->
+		<property name="prefix" value="/WEB-INF/view/"></property>	
+		<!-- 后缀 -->
+		<property name="suffix" value=".html"></property>
+		<!-- 模板的模型是html -->
+		<property name="templateMode" value="HTML" />  
+		<!-- 模板是否需要缓冲 -->
+    	<property name="cacheable" value="false" /> 
+    	<!--解决中文乱码-->  
+    	<property name="characterEncoding" value="UTF-8"/>  
+    	
+    
+	
+	</bean>
+
+	<!-- springmvc提供了关联Theymeleaf引擎的属性 -->
+	<bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
+		<property name="templateResolver" ref="templateResolver"></property>
+		
+	</bean>
+	
+	<!-- 关联视图解析器的属性 -->
+	<bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">  
+	    <property name="templateEngine" ref="templateEngine" />  
+	    <property name="order" value="1"></property> 
+	    <property name="characterEncoding" value="UTF-8"/>  
+    
+  	</bean>  
+
+
+
+
+</beans>
