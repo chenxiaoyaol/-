@@ -6,7 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<properties>
-		<spring.version>5.0.2.RELEASE</spring.version>
+		<spring.version>5.2.7.RELEASE</spring.version>
 		<!-- springmvc版本号 -->
 		<springmvc.version>5.0.2.RELEASE</springmvc.version>
 	</properties>
