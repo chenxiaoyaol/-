@@ -8,7 +8,7 @@
 	<properties>
 		<spring.version>5.0.2.RELEASE</spring.version>
 		<!-- springmvc版本号 -->
-		<springmvc.version>5.0.2.RELEASE</springmvc.version>
+		<springmvc.version>5.3.18</springmvc.version>
 	</properties>
 	<dependencies>
 
